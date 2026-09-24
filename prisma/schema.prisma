@@ -11,3 +11,139 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum UserRole {
+  CUSTOMER
+  TECHNICIAN
+  ADMIN
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  name String 
+  email String @unique
+  role UserRole
+  password String
+  profileImage String?
+  address String?
+  technician TechnicianProfile?
+  bookings Booking[]
+  payments Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TechnicianProfile {
+  id Int @id @default(autoincrement())
+  userId Int @unique
+  user User @relation(fields: [userId], references: [id])
+  bio String?
+  yearsOfExperience Int?
+  skills String[]
+  basePrice Float
+  averageRating Float?
+  isVerified Boolean @default(false)
+  services Service[]
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id Int @id @default(autoincrement())
+  name String
+  description String?
+  image String?
+  isActive Boolean @default(true)
+  services Service[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Service {
+  id Int @id @default(autoincrement())
+  categoryId Int
+  category Category @relation(fields: [categoryId], references: [id])
+  technicianId Int
+  technician TechnicianProfile @relation(fields: [technicianId], references: [id])
+  title String
+  description String?
+  price Float
+  coverage String?
+  warranty String?
+  durationMinutes Int?
+  isActive Boolean @default(true)
+  bookings Booking[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum BookingStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+enum BookingPaymentStatus {
+  PAID
+  UNPAID
+}
+
+model Booking {
+  id Int @id @default(autoincrement())
+  customerId Int
+  user User @relation(fields: [customerId], references: [id])
+  technicianId Int
+  technician TechnicianProfile @relation(fields: [technicianId], references: [id])
+  serviceId Int
+  service Service @relation(fields: [serviceId], references: [id])
+  bookingDate DateTime
+  startDate DateTime?
+  endDate DateTime?
+  address String?
+  note String?
+  bookingStatus BookingStatus
+  paymentStatus BookingPaymentStatus @default(UNPAID)
+  payment Payment?
+  cancelReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum PaymentMethod {
+  SSLCOMMERZ
+}
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+model Payment {
+  id Int @id @default(autoincrement())
+  bookingId Int @unique
+  booking Booking @relation(fields: [bookingId], references: [id])
+  customerId Int
+  customer User @relation(fields: [customerId], references: [id])
+  transactionId String
+  gatewayPaymentId String
+  currency String
+  paymentMethod PaymentMethod
+  amount Float
+  status PaymentStatus @default(PENDING)
+  paidAt DateTime?
+  gatewayResponse String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+}
