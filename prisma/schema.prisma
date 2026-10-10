@@ -110,7 +110,7 @@ model Booking {
   note String?
   bookingStatus BookingStatus
   paymentStatus BookingPaymentStatus @default(UNPAID)
-  payment Payment?
+  payment Payment[]
   cancelReason String?
 
   createdAt DateTime @default(now())
