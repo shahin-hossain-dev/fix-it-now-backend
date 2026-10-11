@@ -3,7 +3,10 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
 import globalErrorHandler from "./middlewares/globalErrorHandler";
-import notFound from "./middlewares/notFound";
+
+import router from "./routes";
+import notFoundRoute from "./middlewares/notFound";
+import status from "http-status";
 
 const app: Express = express();
 
@@ -17,13 +20,18 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello World!");
+app.get("/api/test", (req: Request, res: Response) => {
+  res.status(status.OK).json({
+    success: true,
+    message: "Server is Running",
+  });
 });
 
+// routes
+app.use("/api", router);
 //not found middleware
 
-app.use(notFound);
+app.use(notFoundRoute);
 
 // global error handler
 app.use(globalErrorHandler);
