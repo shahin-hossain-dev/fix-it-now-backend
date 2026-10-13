@@ -18,7 +18,7 @@ app.use(
 );
 app.use(cookieParser());
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/api/test", (req: Request, res: Response) => {
   res.status(status.OK).json({
