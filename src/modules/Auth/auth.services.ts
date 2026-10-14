@@ -12,8 +12,8 @@ interface CreateUserPayload {
 }
 
 const createUser = async (payload: CreateUserPayload) => {
-  const password = payload.password;
-  const email = payload.email;
+  const password = payload?.password;
+  const email = payload?.email;
 
   const isExist = await prisma.user.findUnique({ where: { email } });
 
@@ -24,7 +24,7 @@ const createUser = async (payload: CreateUserPayload) => {
   const salt = bcrypt.genSaltSync(10);
   const hashPass = bcrypt.hashSync(password, salt);
 
-  const user = prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       name: payload.name,
       email: payload.email,

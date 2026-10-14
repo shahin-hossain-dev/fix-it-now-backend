@@ -1,0 +1,23 @@
+1. Project init (fix it now project) - Express + TypeScript setup
+2. Database Prisma schema toiri kora (User model etc.)
+3. Middleware add kora + schema update kora
+4. Global error handler ar notFound middleware add kora
+5. Prisma config ar migration add kora (PostgreSQL, pg adapter)
+6. Auth module: createUser service banano (email exist check, bcrypt diye password hash, prisma.user.create)
+7. Auth module: createUser controller, routes (POST /register) ar reusable sendResponse function banano
+8. Package install kora: zod (validation), multer + @types/multer (form-data parse korar jonno)
+9. app.ts: bodyParser.json() er jaygay express.json() use kora
+10. auth.validation.ts: zod diye registerSchema banano (name min 2, valid email, password min 8). body undefined hole {} dhore nei (z.preprocess)
+11. validateRequest middleware banano (src/middlewares/validateRequest.ts): body, params, query schema diye safeParse kore, fail hole 400 + errors list return kore
+12. auth.routes.ts: /register route e upload.none() (multer) + validateRequest(registerSchema) + controller chain kora. Debug er jonno temporary console.log("After multer") ache - pore remove korte hobe
+13. Bug fix: controller ar service e await miss chilo (authServices.createUser ar prisma.user.create), await add kora
+14. Service e payload?.password / payload?.email (optional chaining) use kora jate body na thakle crash na kore
+15. globalErrorHandler update kora:
+    - ZodError -> 400 + errorSources (path, message)
+    - PrismaClientValidationError -> 400
+    - PrismaClientKnownRequestError: P2002 -> 409 (already exists), P2025 -> 404, P2003 -> 400
+    - PrismaClientInitializationError -> "Database connection failed"
+    - normal Error -> err.message
+    - development mode e stack trace response e pathano
+
+Note: 12 number step er console.log ta remove kora baki. Ar validateRequest middleware ta ekhon parse kora data (result.data) req.body te set kore na, chaile pore add kora jabe.

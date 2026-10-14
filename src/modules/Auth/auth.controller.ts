@@ -4,7 +4,7 @@ import sendResponse from "../../utils/sendResponse";
 import status from "http-status";
 
 const createUser = async (req: Request, res: Response) => {
-  const user = authServices.createUser(req.body);
+  const user = await authServices.createUser(req.body);
 
   sendResponse(res, status.CREATED, {
     success: true,

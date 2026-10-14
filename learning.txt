@@ -1,0 +1,2 @@
+- Zod validation: jokhon empty payload pathano hoy without field:value both.
+field soho error message dekhanor upay hocce zod er body te preprocess() add kora.
