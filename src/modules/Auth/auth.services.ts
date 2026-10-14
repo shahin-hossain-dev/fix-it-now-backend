@@ -1,21 +1,24 @@
 import bcrypt from "bcryptjs";
-import prisma from "../../libs/prisma";
+
 import type { UserRole } from "../../generated/prisma/enums";
+import prisma from "../../libs/prisma";
 
 interface CreateUserPayload {
   name: string;
   password: string;
   email: string;
   role: UserRole;
-  address: string;
-  profileImage: string;
+  address?: string;
+  profileImage?: string;
 }
 
 const createUser = async (payload: CreateUserPayload) => {
   const password = payload?.password;
   const email = payload?.email;
 
-  const isExist = await prisma.user.findUnique({ where: { email } });
+  // const isExist = await prisma.user.findUnique({ where: { email } });
+  const isExist = await prisma.user.findUnique({ where: { email: email } });
+  console.log(isExist);
 
   if (isExist) {
     throw new Error("User already exists with this email");
@@ -29,9 +32,9 @@ const createUser = async (payload: CreateUserPayload) => {
       name: payload.name,
       email: payload.email,
       password: hashPass,
-      role: payload.role,
-      profileImage: payload.profileImage,
-      address: payload.address,
+      role: payload.role ?? "CUSTOMER",
+      profileImage: payload.profileImage ?? "",
+      address: payload.address ?? "",
     },
     select: {
       name: true,

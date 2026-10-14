@@ -10,10 +10,6 @@ const upload = multer();
 authRouter.post(
   "/register",
   upload.none(),
-  (req, res, next) => {
-    console.log("After multer:", req.body);
-    next();
-  },
   validateRequest(registerSchema),
   authController.createUser,
 );

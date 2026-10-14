@@ -12,6 +12,8 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     return next(err);
   }
 
+  console.log(err);
+
   let statusCode = 500; // internal server error
   let message = "Something went wrong";
   let errorSources: TErrorSource[] = [];
