@@ -1,16 +1,7 @@
 import bcrypt from "bcryptjs";
-
-import type { UserRole } from "../../generated/prisma/enums";
 import prisma from "../../libs/prisma";
-
-interface CreateUserPayload {
-  name: string;
-  password: string;
-  email: string;
-  role: UserRole;
-  address?: string;
-  profileImage?: string;
-}
+import { createToken } from "../../utils/jwt";
+import type { CreateUserPayload } from "./auth.interface";
 
 const createUser = async (payload: CreateUserPayload) => {
   const password = payload?.password;
@@ -37,6 +28,7 @@ const createUser = async (payload: CreateUserPayload) => {
       address: payload.address ?? "",
     },
     select: {
+      id: true,
       name: true,
       email: true,
       role: true,
@@ -45,9 +37,37 @@ const createUser = async (payload: CreateUserPayload) => {
     },
   });
 
-  return user;
+  const tokenPayload = { id: user.id, email: user.email, role: user.role };
+
+  const token = createToken(tokenPayload);
+
+  return { token, user };
+};
+
+interface loginPayload {
+  email: string;
+  password: string;
+}
+
+const userLogin = async (payload: loginPayload) => {
+  const user = await prisma.user.findUnique({
+    where: { email: payload.email },
+    omit: { password: true },
+  });
+  const tokenPayload = {
+    id: user?.id as number,
+    email: user?.email as string,
+    role: user?.role as string,
+  };
+  const token = createToken(tokenPayload);
+
+  return {
+    token,
+    user,
+  };
 };
 
 export const authServices = {
   createUser,
+  userLogin,
 };
