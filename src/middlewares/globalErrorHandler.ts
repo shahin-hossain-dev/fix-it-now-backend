@@ -1,6 +1,7 @@
 import type { ErrorRequestHandler } from "express";
 import { ZodError } from "zod";
 import { Prisma } from "../generated/prisma/client";
+import AppError from "../errors/AppError";
 
 interface TErrorSource {
   path: string;
@@ -17,6 +18,11 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   let statusCode = 500; // internal server error
   let message = "Something went wrong";
   let errorSources: TErrorSource[] = [];
+
+  if (err instanceof AppError) {
+    statusCode = err.statusCode;
+    message = err.message;
+  }
 
   // Zod validation error
   if (err instanceof ZodError) {

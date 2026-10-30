@@ -6,7 +6,23 @@ export const registerSchema = z.object({
     z.object({
       name: z.string().min(2, "Name must be at least 2 characters"),
       email: z.string().email("Invalid email address"),
-      password: z.string().min(8, "Password must be at least 8 characters"),
+      password: z
+        .string()
+        .min(8, "Password must be at least 8 characters")
+        .max(50, "Password is too long"),
+    }),
+  ),
+});
+
+export const loginSchema = z.object({
+  body: z.preprocess(
+    (val) => val ?? {},
+    z.object({
+      email: z.string().trim().toLowerCase().email("Invalid email address"),
+      password: z
+        .string()
+        .min(8, "Password must be at least 8 characters")
+        .max(50, "Password is too long"),
     }),
   ),
 });

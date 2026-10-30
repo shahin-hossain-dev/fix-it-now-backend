@@ -2,6 +2,8 @@ import bcrypt from "bcryptjs";
 import prisma from "../../libs/prisma";
 import { createToken } from "../../utils/jwt";
 import type { CreateUserPayload } from "./auth.interface";
+import AppError from "../../errors/AppError";
+import status from "http-status";
 
 const createUser = async (payload: CreateUserPayload) => {
   const password = payload?.password;
@@ -49,11 +51,26 @@ interface loginPayload {
   password: string;
 }
 
+const DUMMY_HASH =
+  "$2b$10$CwTycUXWue0Thq9StjUM0uJ8.Ff7YzA6Zl0QJ6r7jv6pXkOa1Gm8e";
+
 const userLogin = async (payload: loginPayload) => {
   const user = await prisma.user.findUnique({
     where: { email: payload.email },
-    omit: { password: true },
   });
+
+  const matchHashPass = await bcrypt.compare(
+    payload.password,
+    user?.password ?? DUMMY_HASH,
+  );
+
+  if (!user || !matchHashPass) {
+    throw new AppError(status.UNAUTHORIZED, "Invalid email or password");
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password, ...safeUser } = user;
+
   const tokenPayload = {
     id: user?.id as number,
     email: user?.email as string,
@@ -63,7 +80,7 @@ const userLogin = async (payload: loginPayload) => {
 
   return {
     token,
-    user,
+    user: safeUser,
   };
 };
 

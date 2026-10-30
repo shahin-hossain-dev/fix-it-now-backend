@@ -17,9 +17,9 @@ try {
   await prisma.$connect();
   console.log("Database connected successfully");
 
-  const users = await prisma.user.findMany();
+  // const users = await prisma.user.findMany();
 
-  console.log(users);
+  // console.log(users);
 } catch (error) {
   console.error("Database/Prisma error:", error);
 }
