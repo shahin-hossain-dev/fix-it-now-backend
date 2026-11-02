@@ -8,3 +8,9 @@ export interface CreateUserPayload {
   address?: string;
   profileImage?: string;
 }
+
+export interface JwtPayload {
+  id: string;
+  email: string;
+  role: UserRole;
+}
