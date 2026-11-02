@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import prisma from "../../libs/prisma";
 import { createToken } from "../../utils/jwt";
-import type { CreateUserPayload } from "./auth.interface";
+import type { CreateUserPayload, loginPayload } from "./auth.interface";
 import AppError from "../../errors/AppError";
 import status from "http-status";
 
@@ -11,7 +11,6 @@ const createUser = async (payload: CreateUserPayload) => {
 
   // const isExist = await prisma.user.findUnique({ where: { email } });
   const isExist = await prisma.user.findUnique({ where: { email: email } });
-  console.log(isExist);
 
   if (isExist) {
     throw new Error("User already exists with this email");
@@ -45,11 +44,6 @@ const createUser = async (payload: CreateUserPayload) => {
 
   return { token, user };
 };
-
-interface loginPayload {
-  email: string;
-  password: string;
-}
 
 const DUMMY_HASH =
   "$2b$10$CwTycUXWue0Thq9StjUM0uJ8.Ff7YzA6Zl0QJ6r7jv6pXkOa1Gm8e";

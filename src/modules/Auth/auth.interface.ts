@@ -9,6 +9,11 @@ export interface CreateUserPayload {
   profileImage?: string;
 }
 
+export interface loginPayload {
+  email: string;
+  password: string;
+}
+
 export interface JwtPayload {
   id: string;
   email: string;

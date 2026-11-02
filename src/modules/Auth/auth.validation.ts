@@ -1,11 +1,14 @@
 import { z } from "zod";
 
+export const signupRoleSchema = z.enum(["CUSTOMER", "TECHNICIAN"]);
+
 export const registerSchema = z.object({
   body: z.preprocess(
     (val) => val ?? {},
     z.object({
       name: z.string().min(2, "Name must be at least 2 characters"),
       email: z.string().email("Invalid email address"),
+      role: signupRoleSchema,
       password: z
         .string()
         .min(8, "Password must be at least 8 characters")
