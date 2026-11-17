@@ -53,7 +53,7 @@ model TechnicianProfile {
 
 model Category {
   id Int @id @default(autoincrement())
-  name String
+  name String @unique
   description String?
   image String?
   isActive Boolean @default(true)
