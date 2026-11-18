@@ -35,9 +35,25 @@ const getCategoryById = async (req: Request, res: Response) => {
     data: category,
   });
 };
+const updateCategoryById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const payload = req.body;
+
+  const category = await categoryServices.updateCategoryById(
+    id as string,
+    payload,
+  );
+
+  sendResponse(res, status.OK, {
+    success: true,
+    message: "Category updated successfully",
+    data: category,
+  });
+};
 
 export const categoryController = {
   createCategory,
   getCategories,
   getCategoryById,
+  updateCategoryById,
 };

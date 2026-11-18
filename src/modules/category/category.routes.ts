@@ -15,5 +15,12 @@ categoryRouter.post(
 );
 categoryRouter.get("/all-category", categoryController.getCategories);
 categoryRouter.get("/:id", categoryController.getCategoryById);
+categoryRouter.put(
+  "/:id",
+  validateRequest(categorySchema),
+  requireAuth,
+  requireRole("ADMIN"),
+  categoryController.getCategoryById,
+);
 
 export default categoryRouter;

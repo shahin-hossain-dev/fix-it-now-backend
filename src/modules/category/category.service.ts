@@ -20,6 +20,7 @@ const getCategories = async () => {
 
   return categories;
 };
+
 const getCategoryById = async (categoryId: string) => {
   const category = await prisma.category.findUnique({
     where: { id: Number(categoryId) },
@@ -28,8 +29,27 @@ const getCategoryById = async (categoryId: string) => {
   return category;
 };
 
+const updateCategoryById = async (
+  categoryId: string,
+  categoryPayload: TCategoryPayload,
+) => {
+  const { name, description, image } = categoryPayload;
+
+  const newCategory = await prisma.category.update({
+    where: { id: Number(categoryId) },
+    data: {
+      name: name.trim(),
+      description: description || null,
+      image: image || null,
+    },
+  });
+
+  return newCategory;
+};
+
 export const categoryServices = {
   createCategory,
   getCategories,
   getCategoryById,
+  updateCategoryById,
 };
