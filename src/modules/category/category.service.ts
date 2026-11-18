@@ -15,4 +15,21 @@ const createCategory = async (categoryPayload: TCategoryPayload) => {
   return newCategory;
 };
 
-export const categoryServices = { createCategory };
+const getCategories = async () => {
+  const categories = await prisma.category.findMany();
+
+  return categories;
+};
+const getCategoryById = async (categoryId: string) => {
+  const category = await prisma.category.findUnique({
+    where: { id: Number(categoryId) },
+  });
+
+  return category;
+};
+
+export const categoryServices = {
+  createCategory,
+  getCategories,
+  getCategoryById,
+};

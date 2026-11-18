@@ -15,4 +15,29 @@ const createCategory = async (req: Request, res: Response) => {
   });
 };
 
-export const categoryController = { createCategory };
+const getCategories = async (req: Request, res: Response) => {
+  const categories = await categoryServices.getCategories();
+
+  sendResponse(res, status.OK, {
+    success: true,
+    message: "Category retrieve successfully",
+    data: categories,
+  });
+};
+const getCategoryById = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const category = await categoryServices.getCategoryById(id as string);
+
+  sendResponse(res, status.OK, {
+    success: true,
+    message: "Category retrieve successfully",
+    data: category,
+  });
+};
+
+export const categoryController = {
+  createCategory,
+  getCategories,
+  getCategoryById,
+};
